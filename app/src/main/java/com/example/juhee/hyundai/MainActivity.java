@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import org.json.JSONArray;
@@ -22,6 +23,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> mTownAdapter = null;
     ArrayList<String> town_str = null;
+    String mStationType;
+    Integer mcityPosition;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         Spinner mCarSpinner = (Spinner)findViewById(R.id.vehical);
         final Spinner mCitySpinner = (Spinner)findViewById(R.id.city);
         final Spinner mTownSpinner = (Spinner)findViewById(R.id.town);
+        final Button mStationBtn = (Button)findViewById(R.id.searchstation);
 
         mCarSpinner.setAdapter(mCarAdapter);
         mCitySpinner.setAdapter(mCityAdapter);
@@ -47,69 +52,16 @@ public class MainActivity extends AppCompatActivity {
         mCitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, final int position, long id) {
+                mcityPosition = position;
                 if (position!=0) {
                     ShowTownSpinner mTownSpinner = new ShowTownSpinner();
                     mTownSpinner.execute(cityList.get(position-1));
-                    /*final UrlConnection urlconn = new UrlConnection();
-                    new Thread() {
-                        public void run () {
-                            try {
-                                ArrayList<String> mTownList = null;
-                                mTownList = (ArrayList<String>) urlconn.GetTown(cityList.get(position-1));
-                                town_str.clear();
-                                town_str.add("---구,군 선택---");
-                                for (int i =0; i<mTownList.size();i++) {
-                                    Log.e("*********",mTownList.get(i));
-                                    town_str.add(mTownList.get(i));
-                                }
-                                //mTownAdapter.notifyDataSetChanged();
-                                Log.e("++++++++++++++",town_str.toString());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }.start();
-*/
                 }
                 else {
                     town_str.clear();
                     town_str.add("---구,군 선택---");
                     mTownAdapter.notifyDataSetChanged();
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        mTownSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                /*if (position!=0) {
-                    Log.e("@@@@@@@@",mTownSpinner.getSelectedItem().toString());
-                    UrlConnection urlconn = new UrlConnection();
-                    try {
-                        ArrayList<String> mTownList = null;
-                        mTownList = (ArrayList<String>) urlconn.GetTown(mCitySpinner.getSelectedItem().toString());
-                        Log.e("*********",mTownList.toString());
-                        town_str.clear();
-                        town_str.add("---구,군 선택---");
-                        for (int i =0; i<mTownList.size();i++) {
-                            Log.e("*********",mTownList.get(i));
-                            town_str.add(mTownList.get(i));
-                        }
-                        mTownAdapter.notifyDataSetChanged();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                else {
-                    town_str.clear();
-                    town_str.add("---구,군 선택---");
-                    mTownAdapter.notifyDataSetChanged();
-                }*/
             }
 
             @Override
@@ -121,30 +73,40 @@ public class MainActivity extends AppCompatActivity {
         mCarSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                JSONObject jo = new JSONObject();
-                int type;
                 if (position==4) {
-                    type = 1;
+                    mStationType = "상";
                 }
                 else if ((position==1)||(position==6)) {
-                    type = 2;
+                    mStationType = "콤보";
                 }
                 else {
-                    type = 3;
+                    mStationType = "차데모";
                 }
-
-                try {
-                    jo.put("province",mCitySpinner.getSelectedItem().toString()+" "+mTownSpinner.getSelectedItem().toString());
-                    jo.put("type",type);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Log.e("@@@@@@@@@@",jo.toString());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+
+        mStationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        UrlConnection urlconn = new UrlConnection();
+                        try {
+                            //urlconn.GetSupply(mCitySpinner.getSelectedItem().toString(),mTownSpinner.getSelectedItem().toString(),mStationType);
+                            urlconn.GetSupply(cityList.get(mcityPosition-1),mTownSpinner.getSelectedItem().toString(),mStationType);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         });
     }

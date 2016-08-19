@@ -46,9 +46,8 @@ public class UrlConnection {
         conn.disconnect();
     }
 
-    static public String Get(String str) throws IOException {
+    static public String Get(String str, String addedURL) throws IOException {
 
-        String addedURL = "/get/address/";
         String ret = "";
         URL url = new URL(serverURL + addedURL + URLEncoder.encode(str, "UTF-8"));
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -71,7 +70,7 @@ public class UrlConnection {
                 }
                 br.close();
             } else
-            Log.i("UrlConnection", "else");
+                Log.i("UrlConnection", "else");
             Log.v("Server Response(GET)", conn.getResponseMessage());
         }
         conn.disconnect();
@@ -89,7 +88,7 @@ public class UrlConnection {
         ArrayList<String> Townlist = new ArrayList();
 
         try {
-            JSONArray mJsonArr = new JSONArray(Get(province));
+            JSONArray mJsonArr = new JSONArray(Get(province, "/get/address/"));
             for (int i=0; i < mJsonArr.length(); i++) {
                 JSONObject mJsonObj = mJsonArr.getJSONObject(i);
                 String mTown = mJsonObj.getString("town");
@@ -98,8 +97,25 @@ public class UrlConnection {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.e("!!!!!!!!!!",Townlist.toString());
         return Townlist;
+    }
+    public static ArrayList<String> GetSupply(String province, String town, String type) throws IOException {
+
+        ArrayList<String> Addrlist = new ArrayList();
+
+        try {
+            JSONArray mJsonArr = new JSONArray(Get(province + "+" + town + "+" + type, "/get/custom/"));
+
+            for (int i=0; i < mJsonArr.length(); i++) {
+                JSONObject mJsonObj = mJsonArr.getJSONObject(i);
+                Addrlist.add(mJsonObj.toString());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.e("@@@@@@@@@@@@@@@",Addrlist.toString());
+        return Addrlist;
     }
 
 

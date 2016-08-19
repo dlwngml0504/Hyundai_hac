@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="citySpinnerArray">
-        https://github.com/dlwngml0504/Hyundai.git        <item>강원도</item>
+        <item>---시,도 선택---</item>
+        <item>강원도</item>
         <item>경기도</item>
         <item>경상남도</item>
         <item>경상북도</item>
