@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="townSpinnerArray">
+        <item>---구,군 선택---</item>
+    </string-array>
+</resources>
