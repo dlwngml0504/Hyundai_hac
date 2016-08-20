@@ -47,10 +47,16 @@
 
     </LinearLayout>
 
+
     <Button
         android:id="@+id/searchstation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="주요소 검색하기"/>
+
+    <ListView
+        android:id="@+id/stationlistview1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
 
 </LinearLayout>
